@@ -78,7 +78,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
@@ -467,7 +466,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         }
         chest.addUnsafeEnchantment(Enchantment.PROTECTION, new Random().nextInt(10) + 1);
         ItemMeta m = skull.getItemMeta();
-        m.setDisplayName("§fGhost Head");
+        m.setDisplayName("ï¿½fGhost Head");
         skull.setItemMeta(m);
         g.getEquipment().setHelmet(skull);
         g.getEquipment().setChestplate(chest);
@@ -837,7 +836,8 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         return null;
     }
     
-    private void setItem(ItemStack s, String path, FileConfiguration fc) {
+    @SuppressWarnings("deprecation")
+	private void setItem(ItemStack s, String path, FileConfiguration fc) {
         if (s != null) {
             fc.set(path + ".item", s.getType().toString());
             fc.set(path + ".amount", s.getAmount());
@@ -1317,7 +1317,7 @@ fertileList.remove(p);
          e.addPotionEffect(new PotionEffect(PotionEffectType.getByName(name), time*20, level - 1));
      }
         if(e instanceof Player)
-         ((Player)e).sendMessage(this.lootFile.getString("consumeEffects." + effectID + ".message").replace("&", "§"));
+         ((Player)e).sendMessage(this.lootFile.getString("consumeEffects." + effectID + ".message").replace("&", "ï¿½"));
     }
     private void showEffectParticles(final Entity p, final String e, int time) {
         displayEffect(p.getLocation(), e);
@@ -2366,7 +2366,7 @@ fertileList.remove(p);
     }
    
     public ItemStack getDiviningStaff(){
-     ItemStack s = getItem(Material.BLAZE_ROD, "§6§lDivining Rod", 1, Arrays.asList("Click to find infernal mobs."));
+     ItemStack s = getItem(Material.BLAZE_ROD, "ï¿½6ï¿½lDivining Rod", 1, Arrays.asList("Click to find infernal mobs."));
      ItemMeta m = s.getItemMeta();
      m.addEnchant(Enchantment.CHANNELING, 1, true);
      s.setItemMeta(m);
@@ -2429,24 +2429,24 @@ Bukkit.addRecipe(sr);
                             this.lootFile.save(this.lootYML);
                         } catch (IOException ignored) {
                         }
-                        sender.sendMessage("§eLoot Fixed!");
+                        sender.sendMessage("ï¿½eLoot Fixed!");
                     } else if ((args.length == 1) && (args[0].equalsIgnoreCase("reload"))) {
                         reloadConfig();
                         reloadLoot();
-                        sender.sendMessage("§eConfig reloaded!");
+                        sender.sendMessage("ï¿½eConfig reloaded!");
                     } else if (args[0].equals("mobList")) {
-                        sender.sendMessage("§6Mob List:");
+                        sender.sendMessage("ï¿½6Mob List:");
                         for (EntityType et : EntityType.values())
                             if (et != null && et.getName() != null)
-                                sender.sendMessage("§e" + et.getName());
+                                sender.sendMessage("ï¿½e" + et.getName());
                         return true;
                     } else if ((args.length == 1) && (args[0].equalsIgnoreCase("error"))) {
                         this.errorList.add(player);
-                        sender.sendMessage("§eClick on a mob to send an error report about it.");
+                        sender.sendMessage("ï¿½eClick on a mob to send an error report about it.");
                     } else if ((args.length == 1) && (args[0].equalsIgnoreCase("info"))) {
-                        sender.sendMessage("§eMounts: " + this.mountList.size());
-                        sender.sendMessage("§eLoops: " + this.loops);
-                        sender.sendMessage("§eInfernals: " + this.infernalList.size());
+                        sender.sendMessage("ï¿½eMounts: " + this.mountList.size());
+                        sender.sendMessage("ï¿½eLoops: " + this.loops);
+                        sender.sendMessage("ï¿½eInfernals: " + this.infernalList.size());
                     } else if ((args.length == 1) && (args[0].equalsIgnoreCase("worldInfo"))) {
                         List<String> enWorldList = getConfig().getStringList("mobworlds");
                         World world = player.getWorld();
@@ -2466,19 +2466,19 @@ Bukkit.addRecipe(sr);
                         if (gottenLoot != null) {
                             player.getInventory().addItem(gottenLoot);
                         }
-                        sender.sendMessage("§eGave you some random loot!");
+                        sender.sendMessage("ï¿½eGave you some random loot!");
                     } else if ((args.length == 2) && (args[0].equalsIgnoreCase("getloot"))) {
                         try {
                             int index = Integer.parseInt(args[1]);
                             ItemStack i = getLoot(player, index);
                             if (i != null) {
                                 player.getInventory().addItem(i);
-                                sender.sendMessage("§eGave you the loot at index §9" + index);
+                                sender.sendMessage("ï¿½eGave you the loot at index ï¿½9" + index);
                                 return true;
                             }
                         } catch (Exception ignored) {
                         }
-                        sender.sendMessage("§cUnable to get that loot!");
+                        sender.sendMessage("ï¿½cUnable to get that loot!");
                     } else if ((args.length == 3) && (args[0].equalsIgnoreCase("giveloot"))) {
                         try {
                             Player p = getServer().getPlayer(args[1]);
@@ -2487,16 +2487,16 @@ Bukkit.addRecipe(sr);
                                 ItemStack i = getLoot(p, index);
                                 if (i != null) {
                                     p.getInventory().addItem(i);
-                                    sender.sendMessage("§eGave the player the loot at index §9" + index);
+                                    sender.sendMessage("ï¿½eGave the player the loot at index ï¿½9" + index);
                                     return true;
                                 }
                             } else {
-                                sender.sendMessage("§cPlayer not found!!");
+                                sender.sendMessage("ï¿½cPlayer not found!!");
                                 return true;
                             }
                         } catch (Exception ignored) {
                         }
-                        sender.sendMessage("§cUnable to get that loot!");
+                        sender.sendMessage("ï¿½cUnable to get that loot!");
                     } else if (((args.length == 2) && (args[0].equalsIgnoreCase("spawn"))) || ((args[0].equalsIgnoreCase("cspawn")) && (args.length == 6))) {
                         if ((EntityType.fromName(args[1]) != null)) {
                             boolean exmsg;
@@ -2617,10 +2617,10 @@ Bukkit.addRecipe(sr);
                                         sender.sendMessage(oldMobAbilityList.toString());
                                     }
                                 } else {
-                                    sender.sendMessage("§cThis " + targeted.getType().getName() + " §cis not an infernal mob!");
+                                    sender.sendMessage("ï¿½cThis " + targeted.getType().getName() + " ï¿½cis not an infernal mob!");
                                 }
                             } else {
-                                sender.sendMessage("§cUnable to find mob!");
+                                sender.sendMessage("ï¿½cUnable to find mob!");
                             }
                         } else if ((args[0].equalsIgnoreCase("setInfernal")) && (args.length == 2)) {
                             if (player.getTargetBlock(null, 25).getType().equals(Material.SPAWNER)) {
@@ -2628,9 +2628,9 @@ Bukkit.addRecipe(sr);
                                 String name = getLocationName(player.getTargetBlock(null, 25).getLocation());
                                 this.mobSaveFile.set("infernalSpanwers." + name, delay);
                                 this.mobSaveFile.save(this.saveYML);
-                                sender.sendMessage("§cSpawner set to infernal with a " + delay + " second delay!");
+                                sender.sendMessage("ï¿½cSpawner set to infernal with a " + delay + " second delay!");
                             } else {
-                                sender.sendMessage("§cYou must be looking a spawner to make it infernal!");
+                                sender.sendMessage("ï¿½cYou must be looking a spawner to make it infernal!");
                             }
                         } else if ((args[0].equalsIgnoreCase("kill")) && (args.length == 2)) {
                             int size = Integer.parseInt(args[1]);
@@ -2642,7 +2642,7 @@ Bukkit.addRecipe(sr);
                                     this.getLogger().log(Level.INFO, "Entity remove due to /kill");
                                 }
                             }
-                            sender.sendMessage("§eKilled all infernal mobs near you!");
+                            sender.sendMessage("ï¿½eKilled all infernal mobs near you!");
                         } else if ((args[0].equalsIgnoreCase("killall")) && (args.length == 1 || args.length == 2)) {
                             World w = null;
                             if (args.length == 1 && sender instanceof Player){
@@ -2662,24 +2662,24 @@ Bukkit.addRecipe(sr);
                                         e.remove();
                                     }
                                 }
-                                sender.sendMessage("§eKilled all loaded infernal mobs in that world!");
+                                sender.sendMessage("ï¿½eKilled all loaded infernal mobs in that world!");
                             } else {
-                                sender.sendMessage("§cWorld not found!");
+                                sender.sendMessage("ï¿½cWorld not found!");
                             }
                         } else if (args[0].equalsIgnoreCase("mobs")) {
-                            sender.sendMessage("§6List of Mobs:");
+                            sender.sendMessage("ï¿½6List of Mobs:");
                             for (EntityType e : EntityType.values())
                                 if (e != null)
                                     sender.sendMessage(e.toString());
                         } else if (args[0].equalsIgnoreCase("setloot")) {
                             setItem(player.getInventory().getItemInMainHand(), "loot." + args[1], lootFile);
-                            sender.sendMessage("§eSet loot at index " + args[1] + " §eto item in hand.");
+                            sender.sendMessage("ï¿½eSet loot at index " + args[1] + " ï¿½eto item in hand.");
                         } else {
                             throwError(sender);
                         }
                     }
                 } else {
-                    sender.sendMessage("§cYou don't have permission to use this command!");
+                    sender.sendMessage("ï¿½cYou don't have permission to use this command!");
                 }
             } catch (Exception x) {
                 throwError(sender);
