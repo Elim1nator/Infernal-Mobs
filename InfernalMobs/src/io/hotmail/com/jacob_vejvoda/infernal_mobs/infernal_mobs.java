@@ -87,6 +87,8 @@ import org.bukkit.util.Vector;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class infernal_mobs extends JavaPlugin implements Listener {
     GUI gui;
+    VersionsHelper versionsHelper;
+    MobAbilities mobAbilities;
     long serverTime = 0L;
     private int loops;
     ArrayList<InfernalMob> infernalList = new ArrayList();
@@ -108,6 +110,8 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(events, this);
         this.gui = new GUI(this);
         getServer().getPluginManager().registerEvents(this.gui, this);
+        this.versionsHelper = new VersionsHelper();
+        this.mobAbilities = new MobAbilities(this);
         getLogger().info("Events registered.");
 
         // Ensure data folder exists
@@ -213,7 +217,8 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         if (ver.contains("1.16")) return "1_16";
         if (ver.contains("1.15") || ver.contains("1.14") || ver.contains("1.13")) return "1_15";
 
-        return null; // Unsupported version
+        //Let plugin load on latest version if newer MC is in use.
+        return "1_21";
     }
 
     private void reloadPowers() {
@@ -387,7 +392,8 @@ public class infernal_mobs extends JavaPlugin implements Listener {
     
     private void addHealth(Entity ent, List<String> powerList) {
         //double maxHealth = ((org.bukkit.entity.Damageable) ent).getHealth();
-     double maxHealth = ((LivingEntity) ent).getAttribute(Attribute.MAX_HEALTH).getBaseValue();
+    	//double maxHealth = ((LivingEntity) ent).getAttribute(Attribute.MAX_HEALTH).getBaseValue();
+    	double maxHealth = versionsHelper.getMaxHealth((LivingEntity) ent);
         float setHealth;
         if (getConfig().getBoolean("healthByPower")) {
             int mobIndex = idSearch(ent.getUniqueId());
@@ -413,10 +419,12 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         }
         if (setHealth >= 1.0F) {
             try {
-                ((LivingEntity) ent).getAttribute(Attribute.MAX_HEALTH).setBaseValue(setHealth);
-                ((LivingEntity) ent).setHealth(setHealth);
+                //((LivingEntity) ent).getAttribute(Attribute.MAX_HEALTH).setBaseValue(setHealth);
+                //((LivingEntity) ent).setHealth(setHealth);
+            	//double maxHP = versionsHelper.getMaxHealth((LivingEntity) ent);
+            	versionsHelper.setMaxHealth((LivingEntity) ent, setHealth);
             } catch (Exception e) {
-                System.out.println("addHealth: " + e);
+                System.out.println("[IM] addHealth: " + e);
             }
         }
         String list = getPowerString(ent, powerList);
@@ -828,6 +836,11 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                     }
                 }
             }
+            //unbreaking
+            if(lootFile.getString("loot." + loot + ".unbreaking") != null) {
+            	int ubl = lootFile.getInt("loot." + loot + ".unbreaking");
+            	stack.addUnsafeEnchantment(Enchantment.UNBREAKING, ubl);
+            }
             return stack;
         } catch (Exception e) {
             this.getLogger().log(Level.SEVERE, e.getMessage(), true);
@@ -1139,7 +1152,8 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                                         //System.out.print("UP!");//-------------------------------Debug
                                         //InfernalMob newMob = new InfernalMob(mob, id, mob.getWorld(), oneUpper.infernal, abilityList, 1, getEffect());
                                         //infernalList.set(index, newMob);
-                                     ((LivingEntity) mob).setHealth(((LivingEntity) mob).getAttribute(Attribute.MAX_HEALTH).getBaseValue());
+                                    	//((LivingEntity) mob).setHealth(((LivingEntity) mob).getAttribute(Attribute.MAX_HEALTH).getBaseValue());
+                                    	((LivingEntity) mob).setHealth(versionsHelper.getMaxHealth((LivingEntity) mob));
                                         oneUpper.setLives(oneUpper.lives - 1);
                                     }
                                 }
@@ -1529,8 +1543,9 @@ fertileList.remove(p);
                     this.gui.setName(newEnt);
                     giveMobGear(newEnt, true);
                     addHealth(newEnt, aList);
-                    if (h >= ((LivingEntity) newEnt).getAttribute(Attribute.MAX_HEALTH).getBaseValue()) {
-                        return;
+                    //if (h >= ((LivingEntity) newEnt).getAttribute(Attribute.MAX_HEALTH).getBaseValue()) {
+                    if (h >= versionsHelper.getMaxHealth((LivingEntity) newEnt)) {
+                    	return;
                     }
                     ((org.bukkit.entity.Damageable) newEnt).setHealth(h);
                 } catch (Exception ex) {
@@ -1686,75 +1701,79 @@ fertileList.remove(p);
                             direction.multiply(dist);
                             thrownPotion.setVelocity(direction);
 // }
-                        } else if ((ability.equals("mama")) && (isLegitVictim(atc, playerIsVictom, ability))) {
-                            if (randomNum == 1) {
-                                int amount;
-                                if (getConfig().getString("mamaSpawnAmount") != null) {
-                                    amount = getConfig().getInt("mamaSpawnAmount");
-                                } else {
-                                    amount = 3;
-                                }
-                                /**if (atc.getType().equals(EntityType.MUSHROOM_COW)) {
-                                    for (int i = 0; i < amount; i++) {
-                                        MushroomCow minion = (MushroomCow) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.MUSHROOM_COW);
-                                        minion.setBaby();
-                                    }
-                                } else**/ if (atc.getType().equals(EntityType.COW)) {
-                                    for (int i = 0; i < amount; i++) {
-                                        Cow minion = (Cow) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.COW);
-                                        minion.setBaby();
-                                    }
-                                } else if (atc.getType().equals(EntityType.SHEEP)) {
-                                    for (int i = 0; i < amount; i++) {
-                                        Sheep minion = (Sheep) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.SHEEP);
-                                        minion.setBaby();
-                                    }
-                                } else if (atc.getType().equals(EntityType.PIG)) {
-                                    for (int i = 0; i < amount; i++) {
-                                        Pig minion = (Pig) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.PIG);
-                                        minion.setBaby();
-                                    }
-                                } else if (atc.getType().equals(EntityType.CHICKEN)) {
-                                    for (int i = 0; i < amount; i++) {
-                                        Chicken minion = (Chicken) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.CHICKEN);
-                                        minion.setBaby();
-                                    }
-                                } else if (atc.getType().equals(EntityType.WOLF)) {
-                                    for (int i = 0; i < amount; i++) {
-                                        Wolf minion = (Wolf) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.WOLF);
-                                        minion.setBaby();
-                                    }
-                                } else if (atc.getType().equals(EntityType.ZOMBIE)) {
-                                    for (int i = 0; i < amount; i++) {
-                                        Zombie minion = (Zombie) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.ZOMBIE);
-                                        minion.setBaby();
-                                    }
-                                } else if (atc.getType().equals(EntityType.PIGLIN)) {
-                                    for (int i = 0; i < amount; i++) {
-                                        PigZombie minion = (PigZombie) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.PIGLIN);
-                                        minion.setBaby();
-                                    }
-                                } else if (atc.getType().equals(EntityType.OCELOT)) {
-                                    for (int i = 0; i < amount; i++) {
-                                        Ocelot minion = (Ocelot) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.OCELOT);
-                                        minion.setBaby();
-                                    }
-                                } else if (atc.getType().equals(EntityType.HORSE)) {
-                                    for (int i = 0; i < amount; i++) {
-                                        Horse minion = (Horse) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.HORSE);
-                                        minion.setBaby();
-                                    }
-                                } else if (atc.getType().equals(EntityType.VILLAGER)) {
-                                    for (int i = 0; i < amount; i++) {
-                                        Villager minion = (Villager) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.VILLAGER);
-                                        minion.setBaby();
-                                    }
-                                } else {
-                                    for (int i = 0; i < amount; i++) {
-                                        atc.getWorld().spawnEntity(atc.getLocation(), atc.getType());
-                                    }
-                                }
-                            }
+//                        } else if ((ability.equals("mama")) && (isLegitVictim(atc, playerIsVictom, ability))) {
+//                            if (randomNum == 1) {
+//                                int amount;
+//                                if (getConfig().getString("mamaSpawnAmount") != null) {
+//                                    amount = getConfig().getInt("mamaSpawnAmount");
+//                                } else {
+//                                    amount = 3;
+//                                }
+//                                /**if (atc.getType().equals(EntityType.MUSHROOM_COW)) {
+//                                    for (int i = 0; i < amount; i++) {
+//                                        MushroomCow minion = (MushroomCow) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.MUSHROOM_COW);
+//                                        minion.setBaby();
+//                                    }
+//                                } else**/ if (atc.getType().equals(EntityType.COW)) {
+//                                    for (int i = 0; i < amount; i++) {
+//                                        Cow minion = (Cow) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.COW);
+//                                        minion.setBaby();
+//                                    }
+//                                } else if (atc.getType().equals(EntityType.SHEEP)) {
+//                                    for (int i = 0; i < amount; i++) {
+//                                        Sheep minion = (Sheep) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.SHEEP);
+//                                        minion.setBaby();
+//                                    }
+//                                } else if (atc.getType().equals(EntityType.PIG)) {
+//                                    for (int i = 0; i < amount; i++) {
+//                                        Pig minion = (Pig) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.PIG);
+//                                        minion.setBaby();
+//                                    }
+//                                } else if (atc.getType().equals(EntityType.CHICKEN)) {
+//                                    for (int i = 0; i < amount; i++) {
+//                                        Chicken minion = (Chicken) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.CHICKEN);
+//                                        minion.setBaby();
+//                                    }
+//                                } else if (atc.getType().equals(EntityType.WOLF)) {
+//                                    for (int i = 0; i < amount; i++) {
+//                                        Wolf minion = (Wolf) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.WOLF);
+//                                        minion.setBaby();
+//                                    }
+//                                } else if (atc.getType().equals(EntityType.ZOMBIE)) {
+//                                    for (int i = 0; i < amount; i++) {
+//                                        Zombie minion = (Zombie) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.ZOMBIE);
+//                                        minion.setBaby();
+//                                    }
+//                                } else if (atc.getType().equals(EntityType.PIGLIN)) {
+//                                    for (int i = 0; i < amount; i++) {
+//                                        PigZombie minion = (PigZombie) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.PIGLIN);
+//                                        minion.setBaby();
+//                                    }
+//                                } else if (atc.getType().equals(EntityType.OCELOT)) {
+//                                    for (int i = 0; i < amount; i++) {
+//                                        Ocelot minion = (Ocelot) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.OCELOT);
+//                                        minion.setBaby();
+//                                    }
+//                                } else if (atc.getType().equals(EntityType.HORSE)) {
+//                                    for (int i = 0; i < amount; i++) {
+//                                        Horse minion = (Horse) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.HORSE);
+//                                        minion.setBaby();
+//                                    }
+//                                } else if (atc.getType().equals(EntityType.VILLAGER)) {
+//                                    for (int i = 0; i < amount; i++) {
+//                                        Villager minion = (Villager) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.VILLAGER);
+//                                        minion.setBaby();
+//                                    }
+//                                } else {
+//                                    for (int i = 0; i < amount; i++) {
+//                                        atc.getWorld().spawnEntity(atc.getLocation(), atc.getType());
+//                                    }
+//                                }
+//                            }
+                        }else if (ability.equalsIgnoreCase("mama") && isLegitVictim(atc, playerIsVictom, ability)) {
+                        	if (randomNum == 1) {
+                        		MobAbilities.doMamaPower((LivingEntity) atc, playerIsVictom, ability);
+                        	}
                         } else if ((ability.equals("archer")) && (isLegitVictim(atc, playerIsVictom, ability))) {
                             if ((randomNum > 7) || (randomNum == 1)) {
                                 ArrayList<Arrow> arrowList = new ArrayList();
@@ -1874,7 +1893,7 @@ fertileList.remove(p);
             }
         }, 2L);
     }
-    private boolean isLegitVictim(Entity e, boolean playerIsVictom, String ability) {
+    boolean isLegitVictim(Entity e, boolean playerIsVictom, String ability) {
         if ((e instanceof Player)) {
             return true;
         }

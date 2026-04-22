@@ -1804,7 +1804,7 @@ loot:
         enchantment: UNBREAKING
         level: 6
   '126':
-    item: SPEAR
+    item: IRON_SPEAR
     amount: 1
     unbreaking: 35
     name: '&aLunging Leviathan'
@@ -1822,8 +1822,9 @@ loot:
       '4':
         enchantment: MENDING
         level: 1
+
   '127':
-    item: SPEAR
+    item: DIAMOND_SPEAR
     amount: 1
     unbreaking: 28
     name: '&bPoseidon''s Fang'
@@ -1837,12 +1838,12 @@ loot:
         level: 3
       '3':
         enchantment: LUNGE
-        level: 2
+        level: 3
       '4':
         enchantment: UNBREAKING
         level: 5
   '128':
-    item: SPEAR
+    item: NETHERITE_SPEAR
     amount: 1
     unbreaking: 45
     name: '&eHunter''s Reach'
@@ -1850,13 +1851,13 @@ loot:
     enchantments:
       '1':
         enchantment: SHARPNESS
-        level: 4
+        level: 5
       '2':
         enchantment: LUNGE
         level: 3
       '3':
         enchantment: KNOCKBACK
-        level: 3
+        level: 2
       '4':
         enchantment: UNBREAKING
         level: 6
@@ -2027,3 +2028,122 @@ loot:
     amount: 8-16
     name: '&6Polished Trial Copper'
     lore1: '&eShiny and resistant to time'
+  '144':
+    item: COPPER_SPEAR
+    amount: 1
+    unbreaking: 20
+    name: '&6Verdigris Ravager'
+    lore1: '&eAncient copper that hungers for blood'
+    enchantments:
+      '1':
+        enchantment: SHARPNESS
+        level: 4
+      '2':
+        enchantment: LUNGE
+        level: 2
+      '3':
+        enchantment: UNBREAKING
+        level: 3
+
+  '146':
+    item: GOLDEN_SPEAR
+    amount: 1
+    unbreaking: 15
+    name: '&eGolden Trident of Greed'
+    lore1: '&6Fortune favors the bold and shiny'
+    enchantments:
+      '1':
+        enchantment: LOOTING
+        level: 3
+      '2':
+        enchantment: LUNGE
+        level: 4
+      '3':
+        enchantment: UNBREAKING
+        level: 3
+
+  '147':
+    item: DIAMOND_SPEAR
+    amount: 1
+    unbreaking: 40
+    name: '&3Abyssal Piercer'
+    lore1: '&9Born from the darkest ocean depths'
+    enchantments:
+      '1':
+        enchantment: IMPALING
+        level: 6
+      '2':
+        enchantment: LUNGE
+        level: 3
+      '3':
+        enchantment: UNBREAKING
+        level: 5
+      '4':
+        enchantment: MENDING
+        level: 1
+
+  '148':
+    item: NETHERITE_SPEAR
+    amount: 1
+    unbreaking: 50
+    name: '&4Voidreaver Spear'
+    lore1: '&cThe end of all who stand before you'
+    enchantments:
+      '1':
+        enchantment: SHARPNESS
+        level: 6
+      '2':
+        enchantment: LUNGE
+        level: 4
+      '3':
+        enchantment: FIRE_ASPECT
+        level: 2
+      '4':
+        enchantment: UNBREAKING
+        level: 7
+      '5':
+        enchantment: MENDING
+        level: 1
+
+  '149':
+    item: IRON_SPEAR
+    amount: 1
+    unbreaking: 30
+    name: '&7Stormlance'
+    lore1: '&fChannel the fury of thunder'
+    enchantments:
+      '1':
+        enchantment: SHARPNESS
+        level: 5
+      '2':
+        enchantment: LUNGE
+        level: 3
+      '3':
+        enchantment: UNBREAKING
+        level: 4
+  '150':
+    item: GOLDEN_SPEAR
+    amount: 1
+    unbreaking: 25
+    name: '&6Spear of Destiny'
+    lore1: '&eThe Lance of Longinus - Piercer of the Divine'
+    lore2: '&7Whoever wields it shall never know defeat...'
+    enchantments:
+      '1':
+        enchantment: SHARPNESS
+        level: 5
+      '2':
+        enchantment: IMPALING
+        level: 6
+      '3':
+        enchantment: LUNGE
+        level: 4
+      '4':
+        enchantment: LOYALTY
+        level: 3
+      '5':
+        enchantment: UNBREAKING
+        level: 5
+      '6':
+        enchantment: MENDING
+        level: 1
